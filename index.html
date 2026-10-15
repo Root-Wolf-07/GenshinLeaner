@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genshin Cognitive Academy • Animated AI Tutor</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Cinzel & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Custom Genshin Styles -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- Three.js & GLTF Loader Import Map -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+        "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-amber-400 selection:text-slate-900">
+
+  <!-- 4K Ornate Celestial Gate Fixed Background Backdrop -->
+  <div class="fixed inset-0 pointer-events-none -z-10 bg-cover bg-center bg-no-repeat bg-fixed"
+       style="background-image: linear-gradient(to bottom, rgba(12, 16, 29, 0.65) 0%, rgba(12, 16, 29, 0.38) 40%, rgba(12, 16, 29, 0.88) 100%), url('assets/celestial_gate_4k.jpg');"></div>
+
+  <!-- Ambient Golden Sparkle Background Accents -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute top-1/4 left-1/12 w-96 h-96 bg-purple-900/20 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/3 right-1/12 w-96 h-96 bg-amber-600/15 rounded-full blur-3xl"></div>
+    <div class="absolute top-2/3 left-1/2 -translate-x-1/2 w-[600px] h-80 bg-sky-900/15 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="relative z-10 w-full border-b border-[#d3bc8e]/20 bg-[#0c101d]/80 backdrop-blur-md px-4 lg:px-8 py-3.5">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full border border-[#d3bc8e] bg-gradient-to-br from-amber-500/30 to-purple-700/30 flex items-center justify-center shadow-lg shadow-amber-500/20">
+          <span class="text-xl">✦</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-genshin text-lg md:text-xl font-bold tracking-wider text-[#fae4b5]">GENSHIN COGNITIVE ACADEMY</h1>
+            <span class="genshin-badge text-[10px] py-0.5">VER 4.8</span>
+          </div>
+          <p class="text-xs text-[#94a3b8]">Archon-Guided Adaptive Learning & Socratic State Engine</p>
+        </div>
+      </div>
+
+      <!-- Persona Status Indicator & Controls -->
+      <div class="flex items-center gap-2 py-1 flex-wrap">
+        <button id="api-key-config-btn" class="genshin-badge text-xs py-1 px-3 border-amber-400/50 bg-amber-950/60 text-amber-200 hover:bg-amber-900/60 cursor-pointer flex items-center gap-1.5 transition-all" title="Configure Gemini or OpenAI API Key for real-time AI Agent reasoning">
+          <span>🔑</span> <span id="api-key-status-label">AI Key: Config</span>
+        </button>
+        <button id="audio-enable-banner-btn" class="genshin-badge text-xs py-1 px-3 border-emerald-400/50 bg-emerald-950/60 text-emerald-200 hover:bg-emerald-900/60 cursor-pointer flex items-center gap-1.5 transition-all" title="Click to test/unlock localhost voice audio">
+          <span id="audio-status-icon">🔊</span> <span id="audio-status-label">Voice Audio: Active</span>
+        </button>
+      </div>
+
+      <!-- Primogem Counter & Student Portal Profile Pill -->
+      <div class="flex items-center gap-3">
+        <div class="primogem-counter">
+          <span class="text-amber-400 text-sm">✦</span>
+          <span id="primogem-val">1,600</span>
+          <span class="text-[10px] text-amber-200/60 ml-0.5">PRIMOS</span>
+        </div>
+        <button id="auth-account-btn" class="flex items-center gap-2 p-1 pr-3 rounded-full border border-[#d3bc8e]/40 bg-slate-900/80 hover:bg-slate-800/80 hover:border-amber-400 transition-all cursor-pointer shadow-md shadow-amber-900/20" title="Student Portal • Sign In / Dashboard">
+          <div id="auth-pill-avatar" class="w-7 h-7 rounded-full border border-[#d3bc8e] bg-gradient-to-br from-amber-500/40 to-purple-600/40 flex items-center justify-center text-xs text-[#fae4b5] font-bold">
+            ✦
+          </div>
+          <div class="text-left hidden sm:block">
+            <div id="auth-pill-label" class="text-xs text-[#fae4b5] font-semibold truncate max-w-[120px]">Sign In / Register</div>
+            <div id="auth-pill-id-badge" class="text-[9px] text-amber-300/80 font-mono hidden">STU-ID</div>
+          </div>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Grid Content: 3 Themed Feature Cards -->
+    <!-- 9 Academic Disciplines & 3D AI Tutor Selector Bar -->
+    <section class="mb-6 genshin-card p-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 pb-2 border-b border-[#d3bc8e]/20">
+        <div class="flex items-center gap-2">
+          <span class="text-amber-400 text-sm">✦</span>
+          <h3 class="font-genshin text-xs md:text-sm font-bold text-[#fae4b5]">SELECT ACADEMIC DISCIPLINE • ASSIGNED 3D AI TUTOR</h3>
+        </div>
+        <div id="active-discipline-indicator" class="text-[11px] text-cyan-300 font-semibold flex items-center gap-1.5">
+          <span>Active:</span> <span id="current-tutor-discipline" class="px-2 py-0.5 rounded bg-cyan-950/80 border border-cyan-400/40 text-cyan-200">Dance, Communication & Music (Lady Furina)</span>
+        </div>
+      </div>
+
+      <!-- 9 Subject Interactive Character Pills -->
+      <div id="subject-selector-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2">
+        <button data-tutor="raiden_shogun" class="tutor-pill p-2 rounded-lg border border-purple-500/30 bg-purple-950/30 hover:border-purple-400 hover:bg-purple-900/40 text-left transition-all cursor-pointer">
+          <div class="text-[10px] text-purple-300 font-bold flex items-center justify-between">
+            <span>⚡ MATH</span>
+          </div>
+          <div class="font-genshin text-xs text-slate-100 font-bold truncate mt-0.5">Raiden Ei</div>
+          <div class="text-[9px] text-purple-200/60 truncate">Mathematics</div>
+        </button>
+
+        <button data-tutor="zhongli" class="tutor-pill p-2 rounded-lg border border-amber-500/30 bg-amber-950/30 hover:border-amber-400 hover:bg-amber-900/40 text-left transition-all cursor-pointer">
+          <div class="text-[10px] text-amber-400 font-bold flex items-center justify-between">
+            <span>🔶 GEO</span>
+          </div>
+          <div class="font-genshin text-xs text-slate-100 font-bold truncate mt-0.5">Zhongli</div>
+          <div class="text-[9px] text-amber-200/60 truncate">Humanities</div>
+        </button>
+
+        <button data-tutor="barbara" class="tutor-pill p-2 rounded-lg border border-sky-500/30 bg-sky-950/30 hover:border-sky-400 hover:bg-sky-900/40 text-left transition-all cursor-pointer">
+          <div class="text-[10px] text-sky-300 font-bold flex items-center justify-between">
+            <span>💧 BIO</span>
+          </div>
+          <div class="font-genshin text-xs text-slate-100 font-bold truncate mt-0.5">Barbara</div>
+          <div class="text-[9px] text-sky-200/60 truncate">Biology/Zoology</div>
+        </button>
+
+        <button data-tutor="furina" class="tutor-pill active p-2 rounded-lg border border-cyan-400 bg-cyan-500/20 shadow-md shadow-cyan-500/20 text-left transition-all cursor-pointer">
+          <div class="text-[10px] text-cyan-300 font-bold flex items-center justify-between">
+            <span>🎭 MUSIC</span>
+          </div>
+          <div class="font-genshin text-xs text-slate-100 font-bold truncate mt-0.5">Lady Furina</div>
+          <div class="text-[9px] text-cyan-200/60 truncate">Communication</div>
+        </button>
+
+        <button data-tutor="tsaritsa" class="tutor-pill p-2 rounded-lg border border-blue-400/30 bg-blue-950/30 hover:border-blue-300 hover:bg-blue-900/40 text-left transition-all cursor-pointer">
+          <div class="text-[10px] text-blue-200 font-bold flex items-center justify-between">
+            <span>❄️ LANG</span>
+          </div>
+          <div class="font-genshin text-xs text-slate-100 font-bold truncate mt-0.5">Tsaritsa</div>
+          <div class="text-[9px] text-blue-200/60 truncate">Gen. Knowledge</div>
+        </button>
+
+        <button data-tutor="nahida" class="tutor-pill p-2 rounded-lg border border-emerald-500/30 bg-emerald-950/30 hover:border-emerald-400 hover:bg-emerald-900/40 text-left transition-all cursor-pointer">
+          <div class="text-[10px] text-emerald-300 font-bold flex items-center justify-between">
+            <span>🌿 MORAL</span>
+          </div>
+          <div class="font-genshin text-xs text-slate-100 font-bold truncate mt-0.5">Nahida</div>
+          <div class="text-[9px] text-emerald-200/60 truncate">Moral Studies</div>
+        </button>
+
+        <button data-tutor="ganyu" class="tutor-pill p-2 rounded-lg border border-cyan-400/30 bg-cyan-950/30 hover:border-cyan-300 hover:bg-cyan-900/40 text-left transition-all cursor-pointer">
+          <div class="text-[10px] text-cyan-200 font-bold flex items-center justify-between">
+            <span>🏹 PHYS</span>
+          </div>
+          <div class="font-genshin text-xs text-slate-100 font-bold truncate mt-0.5">Ganyu</div>
+          <div class="text-[9px] text-cyan-200/60 truncate">Physics</div>
+        </button>
+
+        <button data-tutor="keqing" class="tutor-pill p-2 rounded-lg border border-purple-400/30 bg-purple-950/30 hover:border-purple-300 hover:bg-purple-900/40 text-left transition-all cursor-pointer">
+          <div class="text-[10px] text-purple-300 font-bold flex items-center justify-between">
+            <span>⚡ CS</span>
+          </div>
+          <div class="font-genshin text-xs text-slate-100 font-bold truncate mt-0.5">Keqing</div>
+          <div class="text-[9px] text-purple-200/60 truncate">Comp. Science</div>
+        </button>
+
+        <button data-tutor="sucrose" class="tutor-pill p-2 rounded-lg border border-teal-500/30 bg-teal-950/30 hover:border-teal-400 hover:bg-teal-900/40 text-left transition-all cursor-pointer">
+          <div class="text-[10px] text-teal-300 font-bold flex items-center justify-between">
+            <span>🧪 CHEM</span>
+          </div>
+          <div class="font-genshin text-xs text-slate-100 font-bold truncate mt-0.5">Sucrose</div>
+          <div class="text-[9px] text-teal-200/60 truncate">Chemistry</div>
+        </button>
+      </div>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- ========================================================
+           CARD 1: ANIMATED TUTOR (State Engine & Viseme Rig)
+           ======================================================== -->
+      <div class="genshin-card p-5 flex flex-col justify-between">
+        <div class="genshin-corner-nodes">
+          <div class="corner-node top-left"></div>
+          <div class="corner-node top-right"></div>
+          <div class="corner-node bottom-left"></div>
+          <div class="corner-node bottom-right"></div>
+        </div>
+
+        <div>
+          <!-- Card Header -->
+          <div class="flex items-center justify-between pb-3 border-b border-[#d3bc8e]/20 mb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-amber-400 font-bold">CARD 01</span>
+                <span class="text-slate-500">•</span>
+                <span id="active-element-badge" class="text-[11px] font-bold px-2 py-0.5 rounded border border-[#38bdf8] text-[#38bdf8]">HYDRO • OUSIA</span>
+              </div>
+              <h2 class="font-genshin text-lg font-bold text-[#fae4b5] mt-0.5">Animated 3D Tutor</h2>
+            </div>
+            <div class="text-right">
+              <span class="text-[11px] text-slate-400 block">Conversational Module</span>
+              <span class="text-xs font-semibold text-cyan-400">● Fontaine 3D</span>
+            </div>
+          </div>
+
+          <!-- Character Header Meta -->
+          <div class="mb-3">
+            <h3 id="active-tutor-name" class="font-genshin text-base font-bold text-slate-100">Lady Furina ✦</h3>
+            <p id="active-tutor-title" class="text-xs text-slate-400">Archon of Hydro • Stage Director of the Opera Epiclese</p>
+          </div>
+
+          <!-- Interactive 3D WebGL Avatar Stage (Lady Furina) -->
+          <div id="avatar-stage" class="fontaine-opera-box">
+            
+            <!-- Three.js WebGL Canvas for 3D Furina -->
+            <canvas id="furina-webgl-canvas" class="furina-webgl-canvas"></canvas>
+
+            <!-- Fontaine Theatrical Vignette Overlay -->
+            <div class="hydro-vignette-overlay"></div>
+
+            <!-- Rotating Celestial Halo Ring Overlay -->
+            <div class="celestial-halo opacity-40"></div>
+
+            <!-- Canvas for Celebration Star Bursts -->
+            <canvas id="celebration-canvas"></canvas>
+
+            <!-- Model Loading Indicator -->
+            <div id="model-loading-indicator" class="absolute inset-0 flex flex-col items-center justify-center bg-[#061124]/90 backdrop-blur-md z-30 transition-opacity duration-500">
+              <div class="w-12 h-12 rounded-full border-2 border-cyan-400 border-t-amber-300 animate-spin mb-3 shadow-lg shadow-cyan-500/50"></div>
+              <div class="font-genshin text-xs text-amber-200 tracking-wider">SUMMONING LADY FURINA 3D</div>
+              <div id="model-loading-progress" class="text-[10px] text-cyan-300/80 mt-1">Loading Fontaine Skinned Model & Verified Bone Rig...</div>
+            </div>
+
+            <!-- 3D UI Framing Badge (OrbitControls Enabled) -->
+            <div class="absolute top-3 right-3 z-20 pointer-events-none">
+              <span class="genshin-badge text-[9px] py-0.5 px-2 bg-cyan-950/80 border-cyan-400/40 text-cyan-200">
+                ✦ 3D Skinned Model • Full Body Head-to-Toe (Drag to Rotate 360° • Scroll to Zoom)
+              </span>
+            </div>
+
+            <!-- Reset Camera Floating Button -->
+            <button id="reset-camera-btn" title="Reset full-body camera angle" class="absolute bottom-3 left-3 z-20 genshin-badge text-[10px] py-0.5 px-2.5 bg-slate-900/90 border-slate-700/60 text-slate-300 hover:text-amber-300 hover:border-amber-400 cursor-pointer transition-all">
+              ↺ Reset View
+            </button>
+
+            <!-- Current State Indicator Pill -->
+            <div class="state-indicator-badge z-20">
+              <span class="state-dot" style="background-color: #38bdf8; box-shadow: 0 0 10px #38bdf8;"></span>
+              <span id="current-state-label">IDLE</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- State Controller & Test Dashboard (9 States) -->
+        <div class="mt-4 pt-3 border-t border-[#d3bc8e]/20">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-genshin font-bold text-[#fae4b5]">STATE CONTROLLER (9 TEACHING STATES)</span>
+            <span class="text-[10px] text-sky-400">Lip-Sync Active</span>
+          </div>
+
+          <!-- 9 State Radio Pills Grid -->
+          <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5 p-1 bg-slate-900/80 rounded-lg border border-[#d3bc8e]/20 text-[10px] text-center font-medium">
+            <label class="cursor-pointer py-1 rounded transition-colors hover:bg-slate-800">
+              <input type="radio" name="state-override" value="idle" checked class="hidden peer">
+              <span class="peer-checked:text-amber-300 peer-checked:font-bold block">Idle</span>
+            </label>
+            <label class="cursor-pointer py-1 rounded transition-colors hover:bg-slate-800">
+              <input type="radio" name="state-override" value="listening" class="hidden peer">
+              <span class="peer-checked:text-sky-300 peer-checked:font-bold block">Listen</span>
+            </label>
+            <label class="cursor-pointer py-1 rounded transition-colors hover:bg-slate-800">
+              <input type="radio" name="state-override" value="thinking" class="hidden peer">
+              <span class="peer-checked:text-teal-300 peer-checked:font-bold block">Think</span>
+            </label>
+            <label class="cursor-pointer py-1 rounded transition-colors hover:bg-slate-800">
+              <input type="radio" name="state-override" value="speaking" class="hidden peer">
+              <span class="peer-checked:text-purple-300 peer-checked:font-bold block">Speak</span>
+            </label>
+            <label class="cursor-pointer py-1 rounded transition-colors hover:bg-slate-800">
+              <input type="radio" name="state-override" value="explaining" class="hidden peer">
+              <span class="peer-checked:text-indigo-300 peer-checked:font-bold block">Explain</span>
+            </label>
+            <label class="cursor-pointer py-1 rounded transition-colors hover:bg-slate-800">
+              <input type="radio" name="state-override" value="questioning" class="hidden peer">
+              <span class="peer-checked:text-emerald-300 peer-checked:font-bold block">Question</span>
+            </label>
+            <label class="cursor-pointer py-1 rounded transition-colors hover:bg-slate-800">
+              <input type="radio" name="state-override" value="encouraging" class="hidden peer">
+              <span class="peer-checked:text-rose-300 peer-checked:font-bold block">Encourage</span>
+            </label>
+            <label class="cursor-pointer py-1 rounded transition-colors hover:bg-slate-800">
+              <input type="radio" name="state-override" value="celebrating" class="hidden peer">
+              <span class="peer-checked:text-amber-400 peer-checked:font-bold block">Celebrate</span>
+            </label>
+            <label class="cursor-pointer py-1 rounded transition-colors hover:bg-slate-800 col-span-2 sm:col-span-1">
+              <input type="radio" name="state-override" value="error" class="hidden peer">
+              <span class="peer-checked:text-red-400 peer-checked:font-bold block">Error</span>
+            </label>
+          </div>
+
+          <!-- Quick Vocalize Button -->
+          <div class="mt-2.5 flex gap-2">
+            <button id="trigger-voice-test-btn" class="genshin-btn w-full py-2 text-xs">
+              ✦ Trigger Synchronized Voice & Lip-Sync
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========================================================
+           CARD 2: NATURAL VOICE CONVERSATIONS (Furina / Hydro)
+           ======================================================== -->
+      <div class="genshin-card p-5 flex flex-col justify-between">
+        <div class="genshin-corner-nodes">
+          <div class="corner-node top-left"></div>
+          <div class="corner-node top-right"></div>
+          <div class="corner-node bottom-left"></div>
+          <div class="corner-node bottom-right"></div>
+        </div>
+
+        <div>
+          <!-- Card Header -->
+          <div class="flex items-center justify-between pb-3 border-b border-[#d3bc8e]/20 mb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-amber-400 font-bold">CARD 02</span>
+                <span class="text-slate-500">•</span>
+                <span id="card-2-element-badge" class="text-[11px] font-bold px-2 py-0.5 rounded border border-[#4fc3f7] text-[#4fc3f7]">HYDRO DIALOGUE</span>
+              </div>
+              <h2 class="font-genshin text-lg font-bold text-[#fae4b5] mt-0.5">Voice Conversations</h2>
+            </div>
+            <div class="w-7 h-7 rounded-full border border-sky-400/40 bg-sky-950/60 flex items-center justify-center text-xs text-sky-300">
+              🎙️
+            </div>
+          </div>
+
+          <!-- Description -->
+          <p class="text-xs text-slate-300 mb-3 leading-relaxed">
+            Real-time speech transcription & low-latency auditory tutoring with fluid waveform harmonics.
+          </p>
+
+          <!-- Speech Waveform Canvas Visualizer -->
+          <div class="mb-4">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1.5 px-1">
+              <span>Acoustic Frequency Monitor</span>
+              <span class="text-sky-300">Fluid Multi-Harmonic</span>
+            </div>
+            <div class="relative w-full h-[90px]">
+              <canvas id="waveform-canvas" class="audio-visualizer-canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- Live Conversation Transcript Stream -->
+          <div class="mb-3">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1.5 px-1">
+              <span>Interactive Dialogue Feed</span>
+              <span class="text-emerald-400 text-[10px]">Active Session</span>
+            </div>
+            <div id="chat-transcript" class="speech-transcript-box">
+              <div class="chat-bubble tutor">
+                <div class="text-[11px] font-semibold mb-1 text-[#38bdf8]">Lady Furina ✦</div>
+                <div>Welcome to the grand trial of knowledge, mon cher Traveler! The stage is set and the audience awaits. What question shall we place on trial today?</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Voice & Question Interaction Controls -->
+        <div class="pt-3 border-t border-[#d3bc8e]/20">
+          
+          <!-- Interactive Question Chatbox -->
+          <div class="mb-3">
+            <label class="text-[10px] text-slate-400 uppercase tracking-wider block mb-1 font-semibold flex items-center justify-between">
+              <span>Ask Your 3D Virtual Tutor:</span>
+              <span class="text-amber-400 font-normal">Press Enter or Click Ask ↵</span>
+            </label>
+            <div class="relative flex items-center">
+              <input 
+                id="student-chat-input" 
+                type="text" 
+                placeholder="Type any question to ask your 3D tutor..." 
+                class="w-full py-2 pl-3 pr-16 rounded-lg bg-slate-900/90 border border-[#d3bc8e]/30 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50 transition-all font-sans"
+              />
+              <button id="send-chat-btn" title="Send Question" class="absolute right-1 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-md bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-300 text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer">
+                <span>Ask</span> <span>➤</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Microphone Voice Input & Live Speech Transcription -->
+          <div class="flex items-center gap-2 mb-3">
+            <button id="mic-toggle-btn" class="genshin-btn-outline w-full py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer" title="Click to grant microphone permission and speak live">
+              <span id="mic-icon" class="text-sm">🎤</span>
+              <span id="mic-status-text">Click Mic to Speak Live</span>
+            </button>
+          </div>
+
+          <!-- Quick Preset Prompts -->
+          <div>
+            <span class="text-[10px] text-slate-400 uppercase tracking-wider block mb-1.5 font-semibold">Suggested Inquiries:</span>
+            <div id="preset-inquiries-container" class="flex flex-wrap gap-1.5">
+              <button class="preset-prompt-btn text-[11px] px-2.5 py-1 rounded bg-slate-800/80 border border-[#d3bc8e]/20 text-slate-300 hover:text-amber-300 hover:border-amber-400 transition-all">
+                Explain Arkhe Mechanics (Pneuma & Ousia)
+              </button>
+              <button class="preset-prompt-btn text-[11px] px-2.5 py-1 rounded bg-slate-800/80 border border-[#d3bc8e]/20 text-slate-300 hover:text-amber-300 hover:border-amber-400 transition-all">
+                Vaporize Multiplier Rules
+              </button>
+              <button class="preset-prompt-btn text-[11px] px-2.5 py-1 rounded bg-slate-800/80 border border-[#d3bc8e]/20 text-slate-300 hover:text-amber-300 hover:border-amber-400 transition-all">
+                How does Electro-Charged react?
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========================================================
+           CARD 3: INTERACTIVE TEACHING (Fontaine Trials & Elemental Mastery)
+           ======================================================== -->
+      <div class="genshin-card p-5 flex flex-col justify-between">
+        <div class="genshin-corner-nodes">
+          <div class="corner-node top-left"></div>
+          <div class="corner-node top-right"></div>
+          <div class="corner-node bottom-left"></div>
+          <div class="corner-node bottom-right"></div>
+        </div>
+
+        <div>
+          <!-- Card Header -->
+          <div class="flex items-center justify-between pb-3 border-b border-[#d3bc8e]/20 mb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-amber-400 font-bold">CARD 03</span>
+                <span class="text-slate-500">•</span>
+                <span id="card-3-element-badge" class="text-[11px] font-bold px-2 py-0.5 rounded border border-[#38bdf8] text-[#38bdf8]">FONTAINE TRIAL</span>
+              </div>
+              <h2 class="font-genshin text-lg font-bold text-[#fae4b5] mt-0.5">Interactive Teaching</h2>
+            </div>
+            <div class="w-7 h-7 rounded-full border border-cyan-400/40 bg-cyan-950/60 flex items-center justify-center text-xs text-cyan-300">
+              ⚖️
+            </div>
+          </div>
+
+          <!-- Socratic Adaptive Challenge -->
+          <div class="p-3.5 rounded-lg bg-slate-900/80 border border-cyan-500/30 mb-3 shadow-inner">
+            <div class="flex items-center justify-between mb-1.5">
+              <span id="socratic-challenge-badge" class="text-[10px] font-bold uppercase tracking-wider text-cyan-400 font-genshin">SOCRATIC CHALLENGE #1</span>
+              <span class="text-[10px] text-amber-300/80 bg-amber-900/40 px-1.5 py-0.5 rounded border border-amber-500/20">+60 ✦ Reward</span>
+            </div>
+            <p id="socratic-question-text" class="text-xs text-slate-200 leading-snug">
+              When <span class="text-purple-400 font-semibold">Electro</span> comes into contact with <span class="text-sky-400 font-semibold">Hydro</span>, which continuous AoE reaction occurs?
+            </p>
+
+            <!-- Quiz Multiple Choice Options -->
+            <div id="quiz-options-container" class="mt-3 flex flex-col gap-1.5">
+              <div class="quiz-option" data-correct="true">
+                <span class="w-5 h-5 rounded-full border border-amber-400/40 flex items-center justify-center text-[10px] font-bold text-amber-300">A</span>
+                <span class="text-xs text-slate-200">Electro-Charged (Continuous damage arc)</span>
+              </div>
+              <div class="quiz-option" data-correct="false">
+                <span class="w-5 h-5 rounded-full border border-amber-400/40 flex items-center justify-center text-[10px] font-bold text-amber-300">B</span>
+                <span class="text-xs text-slate-200">Superconduct (Physical RES shred)</span>
+              </div>
+              <div class="quiz-option" data-correct="false">
+                <span class="w-5 h-5 rounded-full border border-amber-400/40 flex items-center justify-center text-[10px] font-bold text-amber-300">C</span>
+                <span class="text-xs text-slate-200">Overloaded (Blunt knockback explosion)</span>
+              </div>
+              <div class="quiz-option" data-correct="false">
+                <span class="w-5 h-5 rounded-full border border-amber-400/40 flex items-center justify-center text-[10px] font-bold text-amber-300">D</span>
+                <span class="text-xs text-slate-200">Crystallize (Elemental shield shard)</span>
+              </div>
+            </div>
+
+            <!-- Quiz Feedback Notification -->
+            <div id="quiz-feedback" class="hidden"></div>
+          </div>
+
+          <!-- Progressive Hint Accordion -->
+          <div class="mb-3">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1.5 px-1">
+              <span class="font-genshin font-bold text-[#fae4b5]">PROGRESSIVE SOCRATIC HINTS</span>
+              <span class="text-[10px] text-amber-400">Step-by-step Guidance</span>
+            </div>
+            <div id="hint-accordion-list">
+              <!-- Rendered dynamically by app.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Hint Request & Practice Actions -->
+        <div class="pt-3 border-t border-[#d3bc8e]/20 flex items-center gap-2">
+          <button id="request-hint-btn" class="genshin-btn-outline w-full py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
+            <span>💡</span>
+            <span>Request Next Socratic Hint</span>
+          </button>
+          <button id="reset-quiz-btn" class="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-xs text-slate-300 hover:text-white hover:border-slate-500 transition-all">
+            ↺
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Fontaine Opera Epiclese Curriculum & Study Progress Banner -->
+    <section class="mt-8 genshin-card p-4">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full border border-cyan-400 bg-cyan-500/10 flex items-center justify-center text-cyan-300 text-lg">
+            ⚖️
+          </div>
+          <div>
+            <h4 class="font-genshin text-sm font-bold text-[#fae4b5]">FONTAINE OPERA EPICLESE • ADAPTIVE ACADEMY CURRICULUM</h4>
+            <p class="text-xs text-slate-400">Lady Furina coordinates real-time speech synchronization, Socratic trial scaffolding, and elemental mastery tracking.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-6 flex-wrap">
+          <div class="flex items-center gap-2 text-xs text-slate-300">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span>Resonance Mastery: <strong>96%</strong></span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-slate-300">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+            <span>Trial Sessions: <strong>24 Completed</strong></span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-slate-300">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+            <span>Fontaine Primogems: <strong>1,600 ✦</strong></span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-slate-300">
+            <span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
+            <span>Dialogue Engine: <strong>FastAPI SSE Live</strong></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-10 w-full border-t border-[#d3bc8e]/20 bg-[#0c101d]/90 py-3 px-4 text-center text-xs text-[#94a3b8]">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div>Genshin Cognitive Academy • Built with Three.js Skinned Mesh Rig, Web Audio API & Socratic State Engine</div>
+      <div class="text-[#38bdf8]/90 font-genshin text-[11px]">Justice and Wisdom Guide Your Path in Fontaine ✦</div>
+    </div>
+  </footer>
+
+  <!-- Modular Architecture Integration -->
+  <script type="module">
+    import { UniversalTutor3D } from './modules/universal-tutor-3d.js';
+    import { TUTOR_REGISTRY, getTutorById } from './modules/tutor-character-registry.js';
+    import { TutorAudioPlayer } from './modules/tutor-audio-player.js';
+    import { TutorDialogueController } from './modules/tutor-dialogue-controller.js';
+    import { TutorConversationPanel } from './modules/tutor-conversation-panel.js';
+    import { StudentAuthManager } from './modules/student-auth-manager.js';
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      let currentTutorId = 'raiden_shogun';
+      let currentHintIndex = -1;
+
+      // Initialize Student Authentication & Personal Dashboard
+      const studentAuthManager = new StudentAuthManager();
+      window.studentAuthManager = studentAuthManager;
+
+      const audioPlayer = new TutorAudioPlayer();
+      const tutor3D = new UniversalTutor3D('avatar-stage', {
+        character: currentTutorId
+      });
+      window.tutor3D = tutor3D;
+      window.audioPlayer = audioPlayer;
+
+      const dialogueController = new TutorDialogueController({
+        audioPlayer: audioPlayer,
+        animationController: null,
+        lipSyncController: null,
+        subject: 'Mathematics',
+        tutorId: 'raiden_shogun'
+      });
+      window.dialogueController = dialogueController;
+
+      // Poll until initial 3D character controllers are ready
+      const checkInterval = setInterval(() => {
+        if (tutor3D.animationController && tutor3D.lipSyncController) {
+          clearInterval(checkInterval);
+          dialogueController.animationController = tutor3D.animationController;
+          dialogueController.lipSyncController = tutor3D.lipSyncController;
+        }
+      }, 50);
+
+      const conversationPanel = new TutorConversationPanel({
+        transcriptContainer: 'chat-transcript',
+        canvasVisualizer: 'waveform-canvas',
+        micBtn: 'mic-toggle-btn',
+        dialogueController: dialogueController
+      });
+
+      // Audio status indicator updater
+      const audioStatusLabel = document.getElementById('audio-status-label');
+      const audioStatusIcon = document.getElementById('audio-status-icon');
+
+      function updateAudioStatus() {
+        if (!audioStatusLabel) return;
+        if (audioPlayer.audioContext && audioPlayer.audioContext.state === 'running') {
+          audioStatusLabel.textContent = 'Voice Audio: Active';
+          if (audioStatusIcon) audioStatusIcon.textContent = '🔊';
+        } else {
+          audioStatusLabel.textContent = 'Click to Enable Audio';
+          if (audioStatusIcon) audioStatusIcon.textContent = '🔈';
+        }
+      }
+
+      // Socratic Hints Renderer
+      function renderHintsAccordion(hints) {
+        const container = document.getElementById('hint-accordion-list');
+        if (!container) return;
+        container.innerHTML = '';
+        hints.forEach((hintText, idx) => {
+          const isUnlocked = idx <= currentHintIndex;
+          const item = document.createElement('div');
+          item.className = `hint-accordion-item ${isUnlocked ? 'active' : 'opacity-60'} mb-1.5 rounded-lg border border-[#d3bc8e]/20 bg-slate-900/60 overflow-hidden transition-all`;
+          
+          const header = document.createElement('div');
+          header.className = 'hint-accordion-header cursor-pointer flex items-center justify-between p-2.5 text-xs text-slate-200 hover:bg-slate-800/60';
+          header.innerHTML = `
+            <span class="flex items-center gap-2">
+              <span class="text-[10px] px-2 py-0.5 rounded font-bold ${isUnlocked ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-slate-800 text-slate-400'}">
+                ${idx === hints.length - 1 ? 'SOLUTION' : `HINT ${idx + 1}`}
+              </span>
+              <span class="font-medium">${idx === hints.length - 1 ? 'Full Socratic Resolution' : `Guiding Principle ${idx + 1}`}</span>
+            </span>
+            <span class="text-xs text-amber-400 font-bold">${isUnlocked ? '▼' : '🔒'}</span>
+          `;
+
+          const body = document.createElement('div');
+          body.className = `hint-accordion-body p-2.5 text-xs text-slate-300 bg-slate-950/70 border-t border-[#d3bc8e]/10 leading-relaxed ${isUnlocked ? '' : 'hidden'}`;
+          body.textContent = isUnlocked ? hintText : 'Locked. Click "Request Next Socratic Hint" below to reveal step-by-step guidance.';
+
+          header.addEventListener('click', () => {
+            if (isUnlocked) {
+              body.classList.toggle('hidden');
+            }
+          });
+
+          item.appendChild(header);
+          item.appendChild(body);
+          container.appendChild(item);
+        });
+      }
+
+      // Socratic Challenge Card 3 Setup
+      function renderSocraticChallenge(tutor) {
+        const challenge = tutor.socraticChallenge;
+        if (!challenge) return;
+        currentHintIndex = -1;
+
+        const challengeNumEl = document.getElementById('socratic-challenge-badge');
+        if (challengeNumEl) {
+          challengeNumEl.textContent = `SOCRATIC CHALLENGE • ${tutor.subject.toUpperCase()}`;
+          challengeNumEl.style.color = tutor.color;
+        }
+
+        const questionEl = document.getElementById('socratic-question-text');
+        if (questionEl) {
+          questionEl.innerHTML = challenge.question;
+        }
+
+        const optionsContainer = document.getElementById('quiz-options-container');
+        if (optionsContainer) {
+          optionsContainer.innerHTML = '';
+          const letters = ['A', 'B', 'C', 'D'];
+          challenge.options.forEach((opt, idx) => {
+            const optEl = document.createElement('div');
+            optEl.className = 'quiz-option';
+            optEl.dataset.correct = opt.correct ? 'true' : 'false';
+            optEl.innerHTML = `
+              <span class="w-5 h-5 rounded-full border border-amber-400/40 flex items-center justify-center text-[10px] font-bold text-amber-300">${letters[idx]}</span>
+              <span class="text-xs text-slate-200">${opt.text}</span>
+            `;
+
+            optEl.addEventListener('click', () => {
+              audioPlayer.unlockContext();
+              updateAudioStatus();
+              document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('correct', 'incorrect', 'selected'));
+              optEl.classList.add(opt.correct ? 'correct' : 'incorrect');
+
+              const feedbackEl = document.getElementById('quiz-feedback');
+              if (opt.correct) {
+                if (feedbackEl) {
+                  feedbackEl.className = 'mt-3 p-3 rounded-lg border border-emerald-500/40 bg-emerald-950/40 text-emerald-200 text-xs flex items-center justify-between';
+                  feedbackEl.innerHTML = `<div><strong>Flawless Deduction!</strong> ${challenge.praise}</div><span class="text-amber-400 font-bold">+60 ✦</span>`;
+                }
+                tutor3D.setState('celebrating');
+                const stateLabel = document.getElementById('current-state-label');
+                if (stateLabel) stateLabel.textContent = 'CELEBRATING';
+                dialogueController.sendStudentMessage(`I have chosen option ${letters[idx]}: "${opt.text}", and it was confirmed correct!`);
+              } else {
+                if (feedbackEl) {
+                  feedbackEl.className = 'mt-3 p-3 rounded-lg border border-rose-500/40 bg-rose-950/40 text-rose-200 text-xs';
+                  feedbackEl.innerHTML = `<strong>A false premise!</strong> Re-examine the foundational axioms with your tutor.`;
+                }
+                tutor3D.setState('questioning');
+                const stateLabel = document.getElementById('current-state-label');
+                if (stateLabel) stateLabel.textContent = 'QUESTIONING';
+              }
+            });
+
+            optionsContainer.appendChild(optEl);
+          });
+        }
+
+        const feedbackEl = document.getElementById('quiz-feedback');
+        if (feedbackEl) {
+          feedbackEl.className = 'hidden';
+          feedbackEl.innerHTML = '';
+        }
+
+        renderHintsAccordion(challenge.hints);
+      }
+
+      // Master Tutor Switching Engine
+      async function switchTutor(tutorId) {
+        const tutor = getTutorById(tutorId);
+        if (!tutor) return;
+        currentTutorId = tutorId;
+        window.currentTutorId = tutorId;
+
+        // 1. Subject selector grid pill active styling
+        document.querySelectorAll('#subject-selector-grid button').forEach(btn => {
+          if (btn.dataset.tutor === tutorId) {
+            btn.classList.add('active');
+            btn.style.borderColor = tutor.color;
+            btn.style.boxShadow = `0 0 14px ${tutor.glowColor}`;
+          } else {
+            btn.classList.remove('active');
+            btn.style.borderColor = '';
+            btn.style.boxShadow = '';
+          }
+        });
+
+        // 2. Active discipline indicator
+        const activeDisc = document.getElementById('current-tutor-discipline');
+        if (activeDisc) {
+          activeDisc.textContent = `${tutor.subject} (${tutor.name})`;
+          activeDisc.style.borderColor = tutor.color;
+          activeDisc.style.color = tutor.color;
+        }
+
+        // 3. Dynamic CSS Theme Tokens
+        document.documentElement.style.setProperty('--active-accent', tutor.color);
+        document.documentElement.style.setProperty('--active-accent-glow', tutor.glowColor);
+
+        // 4. Card 1 Header & Stage Styling
+        const elBadge = document.getElementById('active-element-badge');
+        if (elBadge) {
+          elBadge.textContent = `${tutor.element.toUpperCase()} • ${tutor.subject.toUpperCase()}`;
+          elBadge.style.borderColor = tutor.color;
+          elBadge.style.color = tutor.color;
+        }
+        const nameEl = document.getElementById('active-tutor-name');
+        if (nameEl) nameEl.textContent = `${tutor.name} ✦`;
+        const titleEl = document.getElementById('active-tutor-title');
+        if (titleEl) titleEl.textContent = tutor.title;
+
+        const stage = document.getElementById('avatar-stage');
+        if (stage) {
+          stage.style.background = tutor.stageBg;
+          const vignette = stage.querySelector('div[class*="-vignette-overlay"]');
+          if (vignette) {
+            vignette.className = tutor.vignetteClass;
+          }
+        }
+
+        // 5. Card 2 Dialogue Header & Suggested Inquiries
+        const card2Badge = document.getElementById('card-2-element-badge');
+        if (card2Badge) {
+          card2Badge.textContent = `${tutor.element.toUpperCase()} DIALOGUE`;
+          card2Badge.style.borderColor = tutor.color;
+          card2Badge.style.color = tutor.color;
+        }
+
+        const transcript = document.getElementById('chat-transcript');
+        if (transcript) {
+          const bubble = document.createElement('div');
+          bubble.className = 'chat-bubble tutor';
+          bubble.innerHTML = `
+            <div class="text-[11px] font-semibold mb-1" style="color: ${tutor.color}">${tutor.name} ✦</div>
+            <div>${tutor.defaultLine}</div>
+          `;
+          transcript.appendChild(bubble);
+          transcript.scrollTop = transcript.scrollHeight;
+        }
+
+        const inquiryContainer = document.getElementById('preset-inquiries-container');
+        if (inquiryContainer && tutor.suggestedInquiries) {
+          inquiryContainer.innerHTML = '';
+          tutor.suggestedInquiries.forEach(q => {
+            const btn = document.createElement('button');
+            btn.className = 'preset-prompt-btn text-[11px] px-2.5 py-1 rounded bg-slate-800/80 border border-[#d3bc8e]/20 text-slate-300 hover:text-amber-300 hover:border-amber-400 transition-all';
+            btn.textContent = q;
+            btn.addEventListener('click', () => {
+              audioPlayer.unlockContext();
+              updateAudioStatus();
+              dialogueController.sendStudentMessage(q);
+            });
+            inquiryContainer.appendChild(btn);
+          });
+        }
+
+        // 6. Card 3 Socratic Challenge & Hints
+        renderSocraticChallenge(tutor);
+
+        // 7. Update dialogue controller state
+        dialogueController.setSubjectAndTutor(tutor.subject, tutor.id);
+
+        // 8. Stream 3D character model into Three.js scene
+        await tutor3D.loadTutor(tutor.id);
+        dialogueController.animationController = tutor3D.animationController;
+        dialogueController.lipSyncController = tutor3D.lipSyncController;
+      }
+      window.switchTutor = switchTutor;
+
+      // Wire 9-Subject Character Selector Grid Buttons
+      document.querySelectorAll('#subject-selector-grid button[data-tutor]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          audioPlayer.unlockContext();
+          updateAudioStatus();
+          switchTutor(btn.dataset.tutor);
+        });
+      });
+
+      // Bind State Preview Radio Buttons (9 Teaching States)
+      document.querySelectorAll('input[name="state-override"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          const state = e.target.value;
+          tutor3D.setState(state);
+          const stateLabel = document.getElementById('current-state-label');
+          if (stateLabel) stateLabel.textContent = state.toUpperCase();
+        });
+      });
+
+      // Student Chatbox Question Submission
+      const chatInput = document.getElementById('student-chat-input');
+      const sendChatBtn = document.getElementById('send-chat-btn');
+
+      function submitStudentQuestion() {
+        if (!chatInput) return;
+        const text = chatInput.value.trim();
+        if (!text) return;
+        audioPlayer.unlockContext();
+        updateAudioStatus();
+        dialogueController.sendStudentMessage(text);
+        chatInput.value = '';
+      }
+
+      if (sendChatBtn) {
+        sendChatBtn.addEventListener('click', submitStudentQuestion);
+      }
+      if (chatInput) {
+        chatInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            submitStudentQuestion();
+          }
+        });
+      }
+
+      // Reset Camera Angle Button
+      const resetCamBtn = document.getElementById('reset-camera-btn');
+      if (resetCamBtn) {
+        resetCamBtn.addEventListener('click', () => {
+          tutor3D.camera.position.set(0, 0.88, 3.45);
+          tutor3D.camera.lookAt(0, 0.80, 0);
+          if (tutor3D.controls) {
+            tutor3D.controls.target.set(0, 0.80, 0);
+            tutor3D.controls.update();
+          }
+        });
+      }
+
+      // Audio Enable Banner Button
+      const audioBannerBtn = document.getElementById('audio-enable-banner-btn');
+      if (audioBannerBtn) {
+        audioBannerBtn.addEventListener('click', () => {
+          audioPlayer.unlockContext();
+          updateAudioStatus();
+          const tutor = getTutorById(currentTutorId);
+          dialogueController.sendStudentMessage(`Greetings! I am ready to study ${tutor.subject} with ${tutor.name}.`);
+        });
+      }
+
+      // Quick Voice & Lip-Sync Trigger
+      const voiceTestBtn = document.getElementById('trigger-voice-test-btn');
+      if (voiceTestBtn) {
+        voiceTestBtn.addEventListener('click', () => {
+          audioPlayer.unlockContext();
+          updateAudioStatus();
+          const tutor = getTutorById(currentTutorId);
+          dialogueController.sendStudentMessage(tutor.suggestedInquiries[0]);
+        });
+      }
+
+      // Hint Request Button
+      const hintBtn = document.getElementById('request-hint-btn');
+      if (hintBtn) {
+        hintBtn.addEventListener('click', () => {
+          audioPlayer.unlockContext();
+          updateAudioStatus();
+          const tutor = getTutorById(currentTutorId);
+          const hints = tutor.socraticChallenge.hints;
+          if (currentHintIndex < hints.length - 1) {
+            currentHintIndex++;
+            renderHintsAccordion(hints);
+            tutor3D.setState('thinking');
+            const stateLabel = document.getElementById('current-state-label');
+            if (stateLabel) stateLabel.textContent = 'THINKING';
+            dialogueController.sendStudentMessage(`Can you give me Socratic Hint #${currentHintIndex + 1}?`);
+          }
+        });
+      }
+
+      // Reset Quiz Button
+      const resetQuizBtn = document.getElementById('reset-quiz-btn');
+      if (resetQuizBtn) {
+        resetQuizBtn.addEventListener('click', () => {
+          const tutor = getTutorById(currentTutorId);
+          renderSocraticChallenge(tutor);
+          tutor3D.setState('idle');
+          const stateLabel = document.getElementById('current-state-label');
+          if (stateLabel) stateLabel.textContent = 'IDLE';
+        });
+      }
+
+      // Microphone Permission & Live Speech Recognition Engine
+      const micBtn = document.getElementById('mic-toggle-btn');
+      const micStatus = document.getElementById('mic-status-text');
+      const micIcon = document.getElementById('mic-icon');
+      let isRecording = false;
+      let recognition = null;
+      let userMediaStream = null;
+
+      const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognitionClass) {
+        recognition = new SpeechRecognitionClass();
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+
+        recognition.onstart = () => {
+          isRecording = true;
+          micBtn.classList.add('bg-red-500/30', 'border-red-400');
+          micBtn.classList.remove('genshin-btn-outline');
+          if (micStatus) micStatus.textContent = 'Listening to your voice... (Speak now)';
+          if (micIcon) micIcon.textContent = '🔴';
+          tutor3D.setState('listening');
+          const stateLabel = document.getElementById('current-state-label');
+          if (stateLabel) stateLabel.textContent = 'LISTENING';
+        };
+
+        recognition.onresult = (event) => {
+          let transcript = '';
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            transcript += event.results[i][0].transcript;
+          }
+          if (chatInput) chatInput.value = transcript;
+          if (micStatus) micStatus.textContent = `Heard: "${transcript}"`;
+        };
+
+        recognition.onerror = (event) => {
+          console.warn('Speech recognition notice:', event.error);
+          if (micStatus) micStatus.textContent = 'Click Mic to Speak Live';
+          isRecording = false;
+        };
+
+        recognition.onend = () => {
+          isRecording = false;
+          micBtn.classList.remove('bg-red-500/30', 'border-red-400');
+          micBtn.classList.add('genshin-btn-outline');
+          if (micIcon) micIcon.textContent = '🎤';
+          if (micStatus) micStatus.textContent = 'Click Mic to Speak Live';
+          if (chatInput && chatInput.value.trim()) {
+            submitStudentQuestion();
+          }
+        };
+      }
+
+      if (micBtn) {
+        micBtn.addEventListener('click', async () => {
+          audioPlayer.unlockContext();
+          updateAudioStatus();
+
+          // Request real browser microphone permission
+          try {
+            if (!userMediaStream && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+              userMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+              // Connect user's microphone to the acoustic frequency visualizer
+              if (audioPlayer.audioContext && audioPlayer.analyser) {
+                const micSource = audioPlayer.audioContext.createMediaStreamSource(userMediaStream);
+                micSource.connect(audioPlayer.analyser);
+              }
+            }
+          } catch (err) {
+            console.warn('Microphone permission info:', err);
+          }
+
+          if (recognition) {
+            if (!isRecording) {
+              try {
+                recognition.start();
+              } catch (e) {
+                recognition.stop();
+              }
+            } else {
+              recognition.stop();
+            }
+          } else {
+            // Fallback for browsers without Web Speech Recognition API
+            if (!isRecording) {
+              isRecording = true;
+              micBtn.classList.add('bg-red-500/30', 'border-red-400');
+              if (micStatus) micStatus.textContent = 'Microphone Active (Click again to send)';
+              tutor3D.setState('listening');
+            } else {
+              isRecording = false;
+              micBtn.classList.remove('bg-red-500/30', 'border-red-400');
+              if (micStatus) micStatus.textContent = 'Click Mic to Speak Live';
+              const tutor = getTutorById(currentTutorId);
+              dialogueController.sendStudentMessage(tutor.suggestedInquiries[1]);
+            }
+          }
+        });
+      }
+
+      // API Key Configuration Settings Modal Logic
+      const apiKeyBtn = document.getElementById('api-key-config-btn');
+      const apiKeyModal = document.getElementById('api-key-modal');
+      const closeApiKeyBtn = document.getElementById('close-api-key-modal-btn');
+      const saveApiKeyBtn = document.getElementById('save-api-key-btn');
+      const clearApiKeyBtn = document.getElementById('clear-api-key-btn');
+      const apiKeyInput = document.getElementById('api-key-input');
+      const apiKeyStatus = document.getElementById('api-key-status-label');
+
+      function refreshApiKeyStatus() {
+        const savedKey = localStorage.getItem('ai_tutor_api_key');
+        if (savedKey) {
+          if (apiKeyStatus) apiKeyStatus.textContent = 'AI Key: Active ✓';
+          if (apiKeyInput) apiKeyInput.value = savedKey;
+        } else {
+          if (apiKeyStatus) apiKeyStatus.textContent = 'AI Key: Config';
+        }
+      }
+      refreshApiKeyStatus();
+
+      if (apiKeyBtn && apiKeyModal) {
+        apiKeyBtn.addEventListener('click', () => apiKeyModal.classList.remove('hidden'));
+      }
+      if (closeApiKeyBtn && apiKeyModal) {
+        closeApiKeyBtn.addEventListener('click', () => apiKeyModal.classList.add('hidden'));
+      }
+      if (saveApiKeyBtn && apiKeyInput && apiKeyModal) {
+        saveApiKeyBtn.addEventListener('click', () => {
+          const key = apiKeyInput.value.trim();
+          if (key) {
+            localStorage.setItem('ai_tutor_api_key', key);
+          }
+          refreshApiKeyStatus();
+          apiKeyModal.classList.add('hidden');
+        });
+      }
+      if (clearApiKeyBtn && apiKeyInput && apiKeyModal) {
+        clearApiKeyBtn.addEventListener('click', () => {
+          localStorage.removeItem('ai_tutor_api_key');
+          apiKeyInput.value = '';
+          refreshApiKeyStatus();
+          apiKeyModal.classList.add('hidden');
+        });
+      }
+
+      // Initial tutor setup
+      switchTutor(currentTutorId);
+
+      // Expose globally for testing & external controllers
+      window.universalTutor3D = tutor3D;
+      window.tutor3D = tutor3D;
+      window.furina3D = tutor3D; // Compatibility alias
+      window.barbara3D = tutor3D; // Compatibility alias
+      window.switchTutor = switchTutor;
+      window.dialogueController = dialogueController;
+      window.audioPlayer = audioPlayer;
+      window.conversationPanel = conversationPanel;
+      window.TUTOR_REGISTRY = TUTOR_REGISTRY;
+      window.studentAuthManager = studentAuthManager;
+    });
+  </script>
+
+  <!-- API Key Settings Modal -->
+  <div id="api-key-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="genshin-card max-w-md w-full p-6 border border-[#d3bc8e]">
+      <div class="flex items-center justify-between pb-3 border-b border-[#d3bc8e]/20 mb-4">
+        <h3 class="font-genshin text-base font-bold text-[#fae4b5]">✦ CONFIGURE AI AGENT KEY</h3>
+        <button id="close-api-key-modal-btn" class="text-slate-400 hover:text-white text-sm cursor-pointer">✕</button>
+      </div>
+      <p class="text-xs text-slate-300 mb-3 leading-relaxed">
+        Connect your personal <strong>Google Gemini API Key</strong> or <strong>OpenAI API Key</strong> so your 3D tutor reasons, speaks, and converses with full agentic intelligence in real time.
+      </p>
+      <input 
+        id="api-key-input" 
+        type="password" 
+        placeholder="Paste Gemini (AIza...) or OpenAI (sk-...) API key" 
+        class="w-full py-2 px-3 rounded-lg bg-slate-900 border border-[#d3bc8e]/30 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400 mb-3 font-mono"
+      />
+      <div class="flex items-center justify-between gap-2">
+        <button id="clear-api-key-btn" class="text-xs text-red-400 hover:underline cursor-pointer">Clear Key</button>
+        <button id="save-api-key-btn" class="genshin-btn py-1.5 px-4 text-xs font-bold cursor-pointer">Save & Activate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Authentication & Personal Dashboard Modal Suite -->
+  <div id="student-auth-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="genshin-card max-w-lg w-full p-6 border border-[#d3bc8e] relative max-h-[92vh] overflow-y-auto">
+      
+      <!-- Modal Top Bar -->
+      <div class="flex items-center justify-between pb-3 border-b border-[#d3bc8e]/20 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-amber-400 text-sm">✦</span>
+          <h3 id="auth-modal-title" class="font-genshin text-sm md:text-base font-bold text-[#fae4b5]">STUDENT PORTAL & IDENTITY</h3>
+        </div>
+        <button id="close-auth-modal-btn" class="w-7 h-7 rounded-full bg-slate-800/80 border border-slate-700 hover:border-amber-400 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-all cursor-pointer">✕</button>
+      </div>
+
+      <!-- Alerts / Notifications -->
+      <div id="auth-error-banner" class="hidden mb-4 p-3 rounded-lg border border-rose-500/50 bg-rose-950/70 text-rose-200 text-xs flex items-center gap-2"></div>
+      <div id="auth-success-banner" class="hidden mb-4 p-3 rounded-lg border border-emerald-500/50 bg-emerald-950/70 text-emerald-200 text-xs flex items-center gap-2"></div>
+
+      <!-- VIEW 1: LOGIN -->
+      <div id="auth-view-login">
+        <div class="mb-4">
+          <h4 class="font-genshin text-base font-bold text-slate-100">Welcome Back, Scholar</h4>
+          <p class="text-xs text-slate-400 mt-1">Sign in with your verified email address or phone number to resume your archon-guided studies.</p>
+        </div>
+
+        <!-- Email / Phone Switcher -->
+        <div class="flex items-center gap-2 mb-4 p-1 rounded-lg bg-slate-900/80 border border-slate-800">
+          <button type="button" id="login-type-email-btn" class="flex-1 py-1.5 px-3 rounded-md border border-amber-400 bg-amber-500/20 text-amber-200 text-xs font-semibold transition-all cursor-pointer">
+            ✉ Email Login
+          </button>
+          <button type="button" id="login-type-phone-btn" class="flex-1 py-1.5 px-3 rounded-md border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-semibold transition-all cursor-pointer">
+            📱 Phone Login
+          </button>
+        </div>
+
+        <form id="auth-login-form" class="space-y-3.5">
+          <div>
+            <label id="login-identifier-label" class="block text-xs font-medium text-slate-300 mb-1">Student Email Address</label>
+            <input 
+              id="login-identifier-input" 
+              type="email" 
+              required
+              placeholder="e.g. lumine@teyvat.org" 
+              class="w-full py-2 px-3 rounded-lg bg-slate-900/90 border border-[#d3bc8e]/30 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400"
+            />
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-medium text-slate-300">Password</label>
+              <button type="button" data-auth-target="forgot" class="text-[11px] text-amber-400/90 hover:text-amber-300 hover:underline cursor-pointer">Forgot Password?</button>
+            </div>
+            <div class="relative">
+              <input 
+                id="login-password-input" 
+                type="password" 
+                required
+                placeholder="Enter your academy password" 
+                class="w-full py-2 px-3 pr-10 rounded-lg bg-slate-900/90 border border-[#d3bc8e]/30 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400"
+              />
+              <button type="button" id="login-password-toggle" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs cursor-pointer" title="Show password">👁️</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input id="login-remember-me" type="checkbox" class="rounded border-slate-700 bg-slate-900 text-amber-500 focus:ring-0 focus:ring-offset-0 cursor-pointer">
+              <span class="text-xs text-slate-300">Remember this device (30 days)</span>
+            </label>
+          </div>
+
+          <button type="submit" id="login-submit-btn" class="w-full genshin-btn py-2.5 px-4 text-xs font-bold shadow-lg shadow-amber-900/20 cursor-pointer">
+            ✦ Sign In to Academy
+          </button>
+        </form>
+
+        <div class="mt-4 pt-3 border-t border-[#d3bc8e]/15 text-center">
+          <p class="text-xs text-slate-400">
+            First time at the Cognitive Academy?
+            <button type="button" data-auth-target="register" class="text-amber-400 font-bold hover:underline cursor-pointer ml-1">Create New Account</button>
+          </p>
+        </div>
+      </div>
+
+      <!-- VIEW 2: REGISTER -->
+      <div id="auth-view-register" class="hidden">
+        <div class="mb-4">
+          <h4 class="font-genshin text-base font-bold text-slate-100">Enroll as a New Scholar</h4>
+          <p class="text-xs text-slate-400 mt-1">Register to receive a permanent unique Student ID and unlock personal adaptive curriculum tracking.</p>
+        </div>
+
+        <!-- Email / Phone Switcher -->
+        <div class="flex items-center gap-2 mb-4 p-1 rounded-lg bg-slate-900/80 border border-slate-800">
+          <button type="button" id="reg-type-email-btn" class="flex-1 py-1.5 px-3 rounded-md border border-amber-400 bg-amber-500/20 text-amber-200 text-xs font-semibold transition-all cursor-pointer">
+            ✉ Register with Email
+          </button>
+          <button type="button" id="reg-type-phone-btn" class="flex-1 py-1.5 px-3 rounded-md border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-semibold transition-all cursor-pointer">
+            📱 Register with Phone
+          </button>
+        </div>
+
+        <form id="auth-register-form" class="space-y-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Full Student Name</label>
+            <input 
+              id="reg-fullname-input" 
+              type="text" 
+              required
+              placeholder="e.g. Lumine of Khaenri'ah" 
+              class="w-full py-2 px-3 rounded-lg bg-slate-900/90 border border-[#d3bc8e]/30 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400"
+            />
+          </div>
+
+          <div>
+            <label id="reg-identifier-label" class="block text-xs font-medium text-slate-300 mb-1">Email Address (Verification required)</label>
+            <input 
+              id="reg-identifier-input" 
+              type="email" 
+              required
+              placeholder="student@university.edu" 
+              class="w-full py-2 px-3 rounded-lg bg-slate-900/90 border border-[#d3bc8e]/30 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Password</label>
+            <div class="relative">
+              <input 
+                id="reg-password-input" 
+                type="password" 
+                required
+                placeholder="At least 8 chars, 1 uppercase, 1 lowercase, 1 digit" 
+                class="w-full py-2 px-3 pr-10 rounded-lg bg-slate-900/90 border border-[#d3bc8e]/30 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400"
+              />
+              <button type="button" id="reg-password-toggle" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs cursor-pointer" title="Show password">👁️</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Confirm Password</label>
+            <div class="relative">
+              <input 
+                id="reg-confirm-password-input" 
+                type="password" 
+                required
+                placeholder="Re-enter your password" 
+                class="w-full py-2 px-3 pr-10 rounded-lg bg-slate-900/90 border border-[#d3bc8e]/30 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400"
+              />
+              <button type="button" id="reg-confirm-password-toggle" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs cursor-pointer" title="Show password">👁️</button>
+            </div>
+          </div>
+
+          <div class="pt-1">
+            <label class="flex items-start gap-2 cursor-pointer">
+              <input id="reg-terms-checkbox" type="checkbox" required class="mt-0.5 rounded border-slate-700 bg-slate-900 text-amber-500 focus:ring-0 focus:ring-offset-0 cursor-pointer">
+              <span class="text-[11px] text-slate-400 leading-tight">
+                I accept the <a href="#" class="text-amber-400 hover:underline">Academic Terms of Enrollment</a> and <a href="#" class="text-amber-400 hover:underline">Student Data Privacy Policy</a>.
+              </span>
+            </label>
+          </div>
+
+          <button type="submit" id="reg-submit-btn" class="w-full genshin-btn py-2.5 px-4 text-xs font-bold shadow-lg shadow-amber-900/20 cursor-pointer">
+            ✦ Enroll & Request Verification Code
+          </button>
+        </form>
+
+        <div class="mt-4 pt-3 border-t border-[#d3bc8e]/15 text-center">
+          <p class="text-xs text-slate-400">
+            Already enrolled?
+            <button type="button" data-auth-target="login" class="text-amber-400 font-bold hover:underline cursor-pointer ml-1">Sign In</button>
+          </p>
+        </div>
+      </div>
+
+      <!-- VIEW 3: VERIFY CODE -->
+      <div id="auth-view-verify" class="hidden">
+        <div class="mb-4 text-center">
+          <div class="w-12 h-12 rounded-full border border-amber-400/40 bg-amber-500/10 text-amber-300 text-xl flex items-center justify-center mx-auto mb-2">
+            🛡️
+          </div>
+          <h4 class="font-genshin text-base font-bold text-slate-100">Verify Your Identity</h4>
+          <p class="text-xs text-slate-400 mt-1">
+            We sent a 6-digit confirmation code to:
+          </p>
+          <div id="verify-target-label" class="text-xs font-mono font-bold text-amber-300 mt-0.5">student@example.com</div>
+        </div>
+
+        <form id="auth-verify-form" class="space-y-4">
+          <div>
+            <label class="block text-center text-xs font-medium text-slate-300 mb-2">Enter 6-Digit Verification Code</label>
+            <input 
+              id="verify-code-input" 
+              type="text" 
+              maxlength="6"
+              required
+              autocomplete="one-time-code"
+              placeholder="123456" 
+              class="w-full py-3 px-4 text-center font-mono text-xl tracking-[0.4em] font-bold rounded-lg bg-slate-900 border border-[#d3bc8e]/40 text-amber-300 placeholder-slate-700 focus:outline-none focus:border-amber-400"
+            />
+          </div>
+
+          <div id="verify-dev-hint" class="p-2.5 rounded-lg bg-amber-950/30 border border-amber-500/20 text-center">
+            <span class="text-[11px] text-amber-200/80">⚡ Localhost Dev Mode: Test OTP is <strong class="text-amber-300 font-mono">123456</strong></span>
+          </div>
+
+          <button type="submit" id="verify-submit-btn" class="w-full genshin-btn py-2.5 px-4 text-xs font-bold shadow-lg shadow-amber-900/20 cursor-pointer">
+            ✦ Verify Account & Issue Student ID
+          </button>
+
+          <div class="flex items-center justify-between text-xs text-slate-400 pt-1">
+            <button type="button" id="verify-resend-btn" class="text-amber-400 hover:underline cursor-pointer">
+              Resend Code
+            </button>
+            <button type="button" data-auth-target="login" class="text-slate-400 hover:text-white cursor-pointer">
+              Return to Login
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- VIEW 4: FORGOT PASSWORD -->
+      <div id="auth-view-forgot" class="hidden">
+        <div class="mb-4">
+          <h4 class="font-genshin text-base font-bold text-slate-100">Recover Account Password</h4>
+          <p class="text-xs text-slate-400 mt-1">Enter your registered email address or phone number. We will send a single-use 6-digit verification code to reset your credentials.</p>
+        </div>
+
+        <form id="auth-forgot-form" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Email or Phone Number</label>
+            <input 
+              id="forgot-identifier-input" 
+              type="text" 
+              required
+              placeholder="e.g. lumine@teyvat.org or +15552345678" 
+              class="w-full py-2 px-3 rounded-lg bg-slate-900/90 border border-[#d3bc8e]/30 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400"
+            />
+          </div>
+
+          <button type="submit" id="forgot-submit-btn" class="w-full genshin-btn py-2.5 px-4 text-xs font-bold shadow-lg shadow-amber-900/20 cursor-pointer">
+            Send Password Reset Code
+          </button>
+        </form>
+
+        <div class="mt-4 pt-3 border-t border-[#d3bc8e]/15 text-center">
+          <button type="button" data-auth-target="login" class="text-xs text-amber-400 hover:underline cursor-pointer">
+            ← Back to Sign In
+          </button>
+        </div>
+      </div>
+
+      <!-- VIEW 5: RESET PASSWORD -->
+      <div id="auth-view-reset" class="hidden">
+        <div class="mb-4">
+          <h4 class="font-genshin text-base font-bold text-slate-100">Set New Password</h4>
+          <p class="text-xs text-slate-400 mt-1">Enter the 6-digit recovery code and choose a new, secure password.</p>
+        </div>
+
+        <form id="auth-reset-form" class="space-y-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Email or Phone Number</label>
+            <input 
+              id="reset-identifier-input" 
+              type="text" 
+              required
+              placeholder="Registered email or phone" 
+              class="w-full py-2 px-3 rounded-lg bg-slate-900/90 border border-[#d3bc8e]/30 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">6-Digit Reset Code</label>
+            <input 
+              id="reset-code-input" 
+              type="text" 
+              maxlength="6"
+              required
+              placeholder="123456" 
+              class="w-full py-2 px-3 font-mono text-center tracking-[0.2em] rounded-lg bg-slate-900/90 border border-[#d3bc8e]/30 text-xs text-amber-300 placeholder-slate-600 focus:outline-none focus:border-amber-400 font-bold"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">New Password</label>
+            <div class="relative">
+              <input 
+                id="reset-password-input" 
+                type="password" 
+                required
+                placeholder="At least 8 chars, 1 uppercase, 1 lowercase, 1 digit" 
+                class="w-full py-2 px-3 pr-10 rounded-lg bg-slate-900/90 border border-[#d3bc8e]/30 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400"
+              />
+              <button type="button" id="reset-password-toggle" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs cursor-pointer" title="Show password">👁️</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Confirm New Password</label>
+            <input 
+              id="reset-confirm-password-input" 
+              type="password" 
+              required
+              placeholder="Re-enter new password" 
+              class="w-full py-2 px-3 rounded-lg bg-slate-900/90 border border-[#d3bc8e]/30 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400"
+            />
+          </div>
+
+          <button type="submit" id="reset-submit-btn" class="w-full genshin-btn py-2.5 px-4 text-xs font-bold shadow-lg shadow-amber-900/20 cursor-pointer">
+            ✦ Update Password & Sign In
+          </button>
+        </form>
+
+        <div class="mt-4 pt-3 border-t border-[#d3bc8e]/15 text-center">
+          <button type="button" data-auth-target="login" class="text-xs text-amber-400 hover:underline cursor-pointer">
+            ← Back to Sign In
+          </button>
+        </div>
+      </div>
+
+      <!-- VIEW 6: PERSONAL STUDENT DASHBOARD -->
+      <div id="auth-view-dashboard" class="hidden space-y-4">
+        
+        <!-- Student Header Card -->
+        <div class="p-4 rounded-xl bg-gradient-to-r from-amber-950/40 via-purple-950/30 to-slate-900/60 border border-[#d3bc8e]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full border-2 border-amber-400 bg-gradient-to-br from-amber-500/40 to-purple-600/40 flex items-center justify-center text-lg text-[#fae4b5] font-bold shadow-lg shadow-amber-500/20">
+              ✦
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h4 id="dash-fullname" class="font-genshin text-base font-bold text-[#fae4b5]">Honored Scholar</h4>
+                <span id="dash-level-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 border border-amber-400/40 text-amber-300">UNDERGRADUATE</span>
+              </div>
+              <p id="dash-contact" class="text-xs text-slate-400">verified.scholar@teyvat.edu</p>
+            </div>
+          </div>
+
+          <!-- Permanent Student ID Pill with 1-Click Copy -->
+          <div class="flex flex-col items-start sm:items-end">
+            <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Permanent Student ID</span>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span id="dash-studentid" class="font-mono text-xs md:text-sm font-bold text-amber-300 bg-slate-950/90 px-2.5 py-1 rounded-md border border-amber-400/40 select-all">
+                STU-XXXXXXXX
+              </span>
+              <button 
+                type="button" 
+                id="dash-copy-id-btn" 
+                class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-600 hover:border-amber-400 text-[11px] text-slate-200 transition-all cursor-pointer flex items-center gap-1"
+                title="Click to copy unique Student ID to clipboard"
+              >
+                <span>📋</span> <span>Copy</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric Counters Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
+          <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800">
+            <div id="dash-docs-count" class="font-genshin text-lg font-bold text-sky-400">0</div>
+            <div class="text-[10px] text-slate-400 uppercase tracking-wider">Documents</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800">
+            <div id="dash-materials-count" class="font-genshin text-lg font-bold text-purple-400">0</div>
+            <div class="text-[10px] text-slate-400 uppercase tracking-wider">Study Guides</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800">
+            <div id="dash-quizzes-count" class="font-genshin text-lg font-bold text-amber-400">0</div>
+            <div class="text-[10px] text-slate-400 uppercase tracking-wider">Quizzes Taken</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800">
+            <div id="dash-avg-score" class="font-genshin text-lg font-bold text-emerald-400">0%</div>
+            <div class="text-[10px] text-slate-400 uppercase tracking-wider">Avg Mastery</div>
+          </div>
+        </div>
+
+        <!-- Assigned Archon Tutors Grid -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h5 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <span>✦</span> Assigned Archon Tutors
+            </h5>
+            <span class="text-[10px] text-slate-500">Click Study to switch tutor</span>
+          </div>
+          <div id="dash-tutors-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 overflow-y-auto pr-1">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Weak Topics / AI Recommendations -->
+        <div>
+          <h5 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+            <span>🎯</span> Adaptive Focus & Weak Topics
+          </h5>
+          <div id="dash-weak-topics-list" class="space-y-1.5 max-h-32 overflow-y-auto pr-1">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div>
+          <h5 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+            <span>📜</span> Recent Study Sessions
+          </h5>
+          <div id="dash-recent-activities-list" class="space-y-1 max-h-28 overflow-y-auto pr-1">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Dashboard Footer Controls -->
+        <div class="pt-3 border-t border-[#d3bc8e]/20 flex items-center justify-between">
+          <button type="button" id="dash-logout-btn" class="text-xs text-rose-400 hover:text-rose-300 hover:underline cursor-pointer flex items-center gap-1">
+            <span>🚪</span> <span>Sign Out</span>
+          </button>
+          <button type="button" onclick="document.getElementById('student-auth-modal').classList.add('hidden')" class="genshin-btn py-1.5 px-4 text-xs font-bold cursor-pointer">
+            Return to Study Stage
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- App Script Fallback/Utilities -->
+  <script src="app.js"></script>
+</body>
+</html>

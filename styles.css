@@ -1,0 +1,671 @@
+/* Genshin Impact Themed UI Stylesheet */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-deep-slate: #0c101d;
+  --bg-card: rgba(16, 24, 43, 0.72);
+  --bg-card-hover: rgba(22, 33, 58, 0.85);
+  --border-gold: #d3bc8e;
+  --border-gold-glow: rgba(211, 188, 142, 0.4);
+  --border-gold-dark: #8e774f;
+  --text-gold: #fae4b5;
+  --text-muted: #94a3b8;
+  --text-light: #f1f5f9;
+
+  /* Elemental Palettes */
+  --color-electro: #a259ff;
+  --color-electro-glow: rgba(162, 89, 255, 0.5);
+  --color-geo: #e5b042;
+  --color-geo-glow: rgba(229, 176, 66, 0.5);
+  --color-hydro: #4fc3f7;
+  --color-hydro-glow: rgba(79, 195, 247, 0.5);
+  --color-dendro: #5cb85c;
+  --color-dendro-glow: rgba(92, 184, 92, 0.5);
+  --color-cryo: #99ffff;
+  --color-cryo-glow: rgba(153, 255, 255, 0.5);
+  --color-anemo: #74ebd5;
+  --color-anemo-glow: rgba(116, 235, 213, 0.5);
+
+  /* Active Persona Elements (Defaults to Electro for Raiden) */
+  --active-accent: var(--color-electro);
+  --active-accent-glow: var(--color-electro-glow);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-deep-slate);
+  color: var(--text-light);
+  font-family: 'Outfit', sans-serif;
+  overflow-x: hidden;
+  background-image: 
+    linear-gradient(to bottom, rgba(12, 16, 29, 0.68) 0%, rgba(12, 16, 29, 0.42) 40%, rgba(12, 16, 29, 0.85) 100%),
+    url('assets/celestial_gate_4k.jpg');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, .font-genshin {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.05em;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(12, 16, 29, 0.8);
+}
+::-webkit-scrollbar-thumb {
+  background: #3a4768;
+  border-radius: 4px;
+  border: 1px solid var(--border-gold-dark);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-gold);
+}
+
+/* Genshin Glassmorphic Card */
+.genshin-card {
+  position: relative;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-gold-glow);
+  border-radius: 14px;
+  box-shadow: 0 10px 35px -5px rgba(0, 0, 0, 0.6),
+              inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.genshin-card:hover {
+  border-color: var(--border-gold);
+  box-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.7),
+              0 0 25px -5px var(--active-accent-glow),
+              inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+/* Filigree Ornaments & Corner Nodes */
+.genshin-card::before,
+.genshin-card::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.genshin-corner-nodes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.corner-node {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--border-gold);
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px var(--border-gold);
+}
+
+.corner-node.top-left { top: 4px; left: 4px; }
+.corner-node.top-right { top: 4px; right: 4px; }
+.corner-node.bottom-left { bottom: 4px; left: 4px; }
+.corner-node.bottom-right { bottom: 4px; right: 4px; }
+
+/* Genshin Header Pill & Badges */
+.genshin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-gold);
+  background: linear-gradient(180deg, rgba(30, 41, 69, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+  color: var(--text-gold);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Genshin Button */
+.genshin-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: #1e1e24;
+  background: linear-gradient(180deg, #f9e7b9 0%, #d8b874 100%);
+  border: 1px solid #ffe9b8;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.genshin-btn:hover {
+  background: linear-gradient(180deg, #fff2cb 0%, #e8ca88 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(229, 176, 66, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.genshin-btn:active {
+  transform: translateY(1px);
+}
+
+.genshin-btn-outline {
+  background: rgba(22, 33, 58, 0.7);
+  color: var(--text-gold);
+  border: 1px solid var(--border-gold-glow);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.genshin-btn-outline:hover {
+  background: rgba(35, 52, 90, 0.85);
+  border-color: var(--border-gold);
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(211, 188, 142, 0.3);
+}
+
+.genshin-btn-elemental {
+  background: linear-gradient(180deg, rgba(162, 89, 255, 0.25) 0%, rgba(120, 50, 220, 0.45) 100%);
+  border: 1px solid var(--active-accent);
+  color: #ffffff;
+}
+
+.genshin-btn-elemental:hover {
+  background: linear-gradient(180deg, rgba(162, 89, 255, 0.45) 0%, rgba(120, 50, 220, 0.65) 100%);
+  box-shadow: 0 0 20px var(--active-accent-glow);
+}
+
+/* ========================================================
+   CHARACTER ANIMATION RIG & VISEME SYSTEM
+   ======================================================== */
+
+.avatar-stage-container {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 12px;
+  background: radial-gradient(circle at 50% 50%, rgba(30, 41, 69, 0.9) 0%, rgba(12, 16, 29, 0.98) 100%);
+  border: 1px solid rgba(211, 188, 142, 0.25);
+}
+
+/* 3D WebGL Stage Container with Fontaine Hydro & Opera Epiclese Aesthetic (#38bdf8, #f5d77f & #0c1b33) */
+.avatar-stage-3d-box,
+.fontaine-opera-box,
+.mondstadt-hydro-box {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  background: radial-gradient(circle at 50% 30%, #0d2347 0%, #061124 100%);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75), 0 0 25px -4px rgba(56, 189, 248, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tutor-webgl-canvas,
+.furina-webgl-canvas,
+.barbara-webgl-canvas,
+.raiden-webgl-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  outline: none;
+}
+
+/* Theatrical Elemental Vignette Overlays */
+.hydro-vignette-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 14px;
+  box-shadow: inset 0 0 50px rgba(56, 189, 248, 0.35), inset 0 0 100px rgba(4, 12, 28, 0.85);
+  background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(4, 12, 28, 0.65) 100%);
+  z-index: 10;
+}
+
+.electro-vignette-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 14px;
+  box-shadow: inset 0 0 50px rgba(162, 89, 255, 0.35), inset 0 0 100px rgba(15, 6, 26, 0.85);
+  background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(12, 6, 26, 0.65) 100%);
+  z-index: 10;
+}
+
+.geo-vignette-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 14px;
+  box-shadow: inset 0 0 50px rgba(229, 176, 66, 0.35), inset 0 0 100px rgba(20, 12, 4, 0.85);
+  background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(18, 11, 4, 0.65) 100%);
+  z-index: 10;
+}
+
+.dendro-vignette-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 14px;
+  box-shadow: inset 0 0 50px rgba(92, 184, 92, 0.35), inset 0 0 100px rgba(6, 20, 11, 0.85);
+  background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(6, 20, 11, 0.65) 100%);
+  z-index: 10;
+}
+
+.cryo-vignette-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 14px;
+  box-shadow: inset 0 0 50px rgba(103, 232, 249, 0.35), inset 0 0 100px rgba(8, 15, 26, 0.85);
+  background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(8, 15, 26, 0.65) 100%);
+  z-index: 10;
+}
+
+.anemo-vignette-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 14px;
+  box-shadow: inset 0 0 50px rgba(52, 211, 153, 0.35), inset 0 0 100px rgba(4, 20, 16, 0.85);
+  background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(4, 20, 16, 0.65) 100%);
+  z-index: 10;
+}
+
+
+
+/* Celestial background halo */
+.celestial-halo {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  border: 1px dashed var(--border-gold-glow);
+  animation: spinHalo 45s linear infinite;
+  pointer-events: none;
+}
+
+.celestial-halo-inner {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  border: 1px solid rgba(162, 89, 255, 0.25);
+  box-shadow: 0 0 30px var(--active-accent-glow);
+  animation: pulseAura 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes spinHalo {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseAura {
+  0%, 100% { transform: scale(0.96); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 0.85; }
+}
+
+/* Avatar Motion Rigging (Idle / State Classes) */
+.character-rig {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.4s ease;
+  will-change: transform, filter;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Idle Breathing Motion: Subtle translate & scale loop (2.8s) */
+.state-idle .character-rig {
+  animation: breathingMotion 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes breathingMotion {
+  0% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-5px) scale(1.015); }
+  100% { transform: translateY(0px) scale(1); }
+}
+
+/* Listening State: Forward tilt + pulsating active aura */
+.state-listening .character-rig {
+  transform: translateY(-2px) scale(1.03) rotate(-1.5deg);
+  filter: drop-shadow(0 0 18px var(--active-accent));
+  animation: listeningPulse 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes listeningPulse {
+  0% { filter: drop-shadow(0 0 12px var(--active-accent)); }
+  100% { filter: drop-shadow(0 0 25px var(--active-accent)) brightness(1.08); }
+}
+
+/* Thinking State: Head tilt + orbital constellation rings */
+.state-thinking .character-rig {
+  transform: translateY(-4px) rotate(3deg) scale(0.98);
+  filter: drop-shadow(0 0 16px rgba(116, 235, 213, 0.6));
+  animation: thinkingSway 3s ease-in-out infinite alternate;
+}
+
+@keyframes thinkingSway {
+  0% { transform: translateY(-4px) rotate(2.5deg) scale(0.98); }
+  100% { transform: translateY(-7px) rotate(4deg) scale(0.99); }
+}
+
+/* Speaking State: Rhythmic drift & active energy */
+.state-speaking .character-rig {
+  animation: speakingMotion 0.6s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 20px var(--active-accent));
+}
+
+@keyframes speakingMotion {
+  0% { transform: translateY(-3px) scale(1.01); }
+  100% { transform: translateY(-6px) scale(1.025); }
+}
+
+/* Celebrating State: Joyful upward bounce & fireworks particles */
+.state-celebrating .character-rig {
+  animation: celebrateBounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite alternate;
+  filter: drop-shadow(0 0 30px #f59e0b) brightness(1.15);
+}
+
+@keyframes celebrateBounce {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-16px) scale(1.08) rotate(1deg); }
+}
+
+/* Avatar Image & Overlay Structure */
+.avatar-image-frame {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  border: 3px solid var(--border-gold);
+  overflow: hidden;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.8), 0 0 15px var(--active-accent-glow);
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  transition: filter 0.3s ease;
+}
+
+/* Viseme & Mouth Rigging (Amplitude-driven SVG / CSS Layer) */
+.viseme-mouth-container {
+  position: absolute;
+  bottom: 27%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.viseme-mouth-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.viseme-lips {
+  fill: #e8869c;
+  stroke: #9d3f57;
+  stroke-width: 1.5;
+  transition: transform 0.06s ease-out;
+  transform-origin: center;
+}
+
+.viseme-oral-cavity {
+  fill: #6e1c2e;
+  transition: transform 0.06s ease-out;
+  transform-origin: center;
+}
+
+/* State Badge Indicator */
+.state-indicator-badge {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: rgba(12, 16, 29, 0.88);
+  border: 1px solid var(--border-gold);
+  backdrop-filter: blur(8px);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-gold);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.state-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--active-accent);
+  box-shadow: 0 0 10px var(--active-accent);
+  animation: pulseDot 1.2s infinite alternate;
+}
+
+@keyframes pulseDot {
+  from { opacity: 0.6; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1.2); }
+}
+
+/* ========================================================
+   AUDIO WAVEFORM & SPEECH VISUALIZER
+   ======================================================== */
+.audio-visualizer-canvas {
+  width: 100%;
+  height: 90px;
+  background: rgba(8, 11, 20, 0.7);
+  border: 1px solid rgba(211, 188, 142, 0.2);
+  border-radius: 10px;
+  display: block;
+}
+
+.speech-transcript-box {
+  height: 220px;
+  overflow-y: auto;
+  padding: 12px;
+  background: rgba(8, 12, 22, 0.65);
+  border: 1px solid rgba(211, 188, 142, 0.2);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-bubble {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  max-width: 85%;
+  position: relative;
+}
+
+.chat-bubble.tutor {
+  align-self: flex-start;
+  background: rgba(26, 36, 62, 0.9);
+  border: 1px solid rgba(211, 188, 142, 0.35);
+  color: #f1f5f9;
+  border-bottom-left-radius: 2px;
+}
+
+.chat-bubble.tutor::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--active-accent);
+  border-radius: 2px 0 0 2px;
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background: rgba(79, 195, 247, 0.15);
+  border: 1px solid rgba(79, 195, 247, 0.4);
+  color: #e0f2fe;
+  border-bottom-right-radius: 2px;
+}
+
+/* ========================================================
+   INTERACTIVE TEACHING & SOCRATIC HINT ACCORDION
+   ======================================================== */
+.hint-accordion-item {
+  border: 1px solid rgba(211, 188, 142, 0.25);
+  border-radius: 8px;
+  background: rgba(15, 22, 38, 0.65);
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.hint-accordion-item.active {
+  border-color: var(--color-geo);
+  background: rgba(26, 36, 62, 0.85);
+  box-shadow: 0 4px 15px rgba(229, 176, 66, 0.15);
+}
+
+.hint-accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-gold);
+}
+
+.hint-accordion-header:hover {
+  background: rgba(229, 176, 66, 0.1);
+}
+
+.hint-accordion-body {
+  padding: 0 14px;
+  max-height: 0;
+  overflow: hidden;
+  font-size: 0.82rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hint-accordion-item.active .hint-accordion-body {
+  padding: 10px 14px 14px 14px;
+  max-height: 180px;
+}
+
+/* Quiz Option Pills */
+.quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(211, 188, 142, 0.25);
+  background: rgba(12, 17, 30, 0.7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+}
+
+.quiz-option:hover {
+  border-color: var(--color-geo);
+  background: rgba(229, 176, 66, 0.1);
+  transform: translateX(3px);
+}
+
+.quiz-option.selected {
+  border-color: var(--color-geo);
+  background: rgba(229, 176, 66, 0.2);
+  box-shadow: 0 0 12px rgba(229, 176, 66, 0.3);
+}
+
+.quiz-option.correct {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.25);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+}
+
+.quiz-option.incorrect {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.25);
+}
+
+/* Star / Primogem Particle Burst */
+.primogem-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(20, 27, 45, 0.85);
+  border: 1px solid var(--border-gold);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Celebration Canvas Overlay */
+#celebration-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+}

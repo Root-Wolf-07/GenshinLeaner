@@ -1,0 +1,11 @@
+Model Information:
+* title:	zhongli from genshin impact
+* source:	https://sketchfab.com/3d-models/zhongli-from-genshin-impact-aac0ffcadd6948b1800aa5b26360dcc2
+* author:	SLDDL (https://sketchfab.com/simon.masse200)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "zhongli from genshin impact" (https://sketchfab.com/3d-models/zhongli-from-genshin-impact-aac0ffcadd6948b1800aa5b26360dcc2) by SLDDL (https://sketchfab.com/simon.masse200) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
